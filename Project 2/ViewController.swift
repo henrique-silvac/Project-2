@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var countries = [String]()
     var score = 0
     var correctAnswer = 0
+    var askedQuestions = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,10 +31,12 @@ class ViewController: UIViewController {
         button3.layer.borderColor = UIColor.lightGray.cgColor
         
         askQuestion(action: nil)
+        
     }
     
     func askQuestion(action: UIAlertAction! = nil) {
-        title = countries[correctAnswer].uppercased()
+        let uppercasedCountry = countries[correctAnswer].uppercased()
+        title = "Tap on: \(uppercasedCountry)'s flag. - Score: \(score)"
         
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
@@ -51,7 +54,7 @@ class ViewController: UIViewController {
             title = "Correct"
             score += 1
         } else  {
-            title = "Wrong"
+            title = "Wrong! That's the flag of \(countries[sender.tag].uppercased())"
             score -= 1
         }
         
@@ -60,6 +63,24 @@ class ViewController: UIViewController {
         ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
         
         present(ac, animated: true, completion: nil)
+        
+        if askedQuestions < 10 {
+            let ac = UIAlertController(title: title, message: "Your score is \(score).", preferredStyle: .alert)
+           ac.addAction(UIAlertAction(title: "Play again", style: .default, handler: askQuestion))
+           present(ac, animated: true)
+        } else {
+            let ac = UIAlertController(title: title, message: "Your final score is \(score).", preferredStyle: .alert)
+          ac.addAction(UIAlertAction(title: "Play again", style: .default, handler: askQuestion))
+          present(ac, animated: true)
+          score = 0
+        }
     }
-
+    
+    func startNewGame(action: UIAlertAction) {
+        score = 0
+        askedQuestions = 0
+        
+        askQuestion()
+    }
+    
 }
